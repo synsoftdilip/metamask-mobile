@@ -1,5 +1,5 @@
 // Third party dependencies.
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import { Platform, Switch, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import images from 'images/image-icons';
@@ -53,6 +53,7 @@ import {
 } from '../../../component-library/components/Texts/Text';
 import { updateIncomingTransactions } from '../../../util/transaction-controller';
 import { useMetrics } from '../../../components/hooks/useMetrics';
+import { RootContext } from '../Root';
 
 // Internal dependencies
 import styles from './NetworkSelector.styles';
@@ -67,8 +68,12 @@ const NetworkSelector = () => {
 
   const providerConfig: ProviderConfig = useSelector(selectProviderConfig);
   const networkConfigurations = useSelector(selectNetworkConfigurations);
+  const { toggleTheme } = useContext(RootContext);
 
   const onNetworkChange = (type: string) => {
+    // change theme on selection **** 
+    type === MAINNET ? toggleTheme('light') : toggleTheme('dark')
+
     const {
       NetworkController,
       CurrencyRateController,

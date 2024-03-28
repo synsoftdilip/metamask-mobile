@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
@@ -13,6 +13,7 @@ import { useAppTheme, ThemeContext } from '../../../util/theme';
 import { ToastContextWrapper } from '../../../component-library/components/Toast';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { isTest } from '../../../util/test/utils';
+import { newThemeSet1, newThemeSet2 } from './newThemes';
 
 /**
  * Top level of the component hierarchy
@@ -79,11 +80,19 @@ export default class Root extends PureComponent {
   }
 }
 
+// create root context for handle theme chane event
+export const RootContext = createContext(newThemeSet1);
+
 const ConnectedRoot = () => {
-  const theme = useAppTheme();
+  // const theme = useAppTheme();
+  const [theme, setTheme] = useState(newThemeSet1);
+  const toggleTheme = (themeType) => {
+    themeType === 'light' ? setTheme(newThemeSet1) : setTheme(newThemeSet2)
+  };
 
   return (
     <SafeAreaProvider>
+      <RootContext.Provider value={{ toggleTheme }}>
       <ThemeContext.Provider value={theme}>
         <ToastContextWrapper>
           <ErrorBoundary view="Root">
@@ -91,6 +100,7 @@ const ConnectedRoot = () => {
           </ErrorBoundary>
         </ToastContextWrapper>
       </ThemeContext.Provider>
+      </RootContext.Provider>
     </SafeAreaProvider>
   );
 };
